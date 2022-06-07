@@ -1,39 +1,59 @@
 import React from "react";
+import { useState } from "react";
 import axios from "axios"
 import useCollapse from 'react-collapsed';
 
 
 function Students() {
 
-  const [students, setStudents] = React.useState([])
-  const [search, setSearch] = React.useState("")
-  const [ isExpanded, setExpanded ] = React.useState(false);
+  const [students, setStudents] = useState([])
+  const [search, setSearch] = useState("")
+  const [ isExpanded, setExpanded ] = useState(false);
   const { getCollapseProps, getToggleProps } = useCollapse({ isExpanded });
   const [open, setOpen] = React.useState([])
 
   const toggleOpen= (id) => {
-    if (open.includes(id)) {
-     setOpen(open.filter(sid => sid !== id))
+    if (!open.includes(id)) {
+        let newOpen = [...open].concat(id)
+        //  newOpen.push(id)
+         console.log("id", id)
+         setOpen(newOpen)
+    
+         console.log("new", newOpen)
+         console.log("open", open)
+         handleOnClick()
+     
     } else {
-     let newOpen = [...open]
-     newOpen.push(id)
-     console.log("id", id)
-     setOpen(newOpen)
-     console.log("set", setOpen)
-     console.log("new", newOpen)
-     console.log("open", open)
+        setOpen(open.filter(studenId => studenId !== id))
+        handleOnClick()
     }
   }
+
+//   const toggleOpen= (id) => {
+//     if (open.includes(id)) {
+//      setOpen(open.filter(studenId => studenId !== id))
+//     } else {
+//      let newOpen = [...open].concat(id)
+//     //  newOpen.push(id)
+//      console.log("id", id)
+//      setOpen(newOpen)
+
+//      console.log("new", newOpen)
+//      console.log("open", open)
+//      handleOnClick()
+//     }
+//   }
 
 
   React.useEffect(() => {
     getStudents()
       }, []);
 
-//   let handleOnClick= () => {
-//       setExpanded(!isExpanded);
-//       console.log("expanded", isExpanded)
-//   }
+  let handleOnClick= () => {
+      
+      setExpanded(!isExpanded);
+      console.log("expanded", isExpanded)
+  }
     
   let getStudents = () => {
     axios
@@ -124,7 +144,14 @@ function Students() {
                     {open.includes(student.id) ? 
                         (
                             <div className="grades-list">
-                            {student.grades.map((grade, i) => {return (<div><p key={grade.id}>Test {i + 1}: {grade}%</p></div> )})}
+                            <p>test</p>
+                            {student.grades.map((grade, i) => {
+                                return (
+                                    <div>
+                                        <p key={grade.id}>Test {i + 1}: &nbsp;&nbsp; {grade}%</p>
+                                    </div> 
+                                    )
+                                })}
                             </div>) 
 
                         : null}
