@@ -10,17 +10,13 @@ function Students() {
   const [search, setSearch] = useState("")
   const [ isExpanded, setExpanded ] = useState(false);
   const { getCollapseProps, getToggleProps } = useCollapse({ isExpanded });
-  const [open, setOpen] = React.useState([])
+  const [open, setOpen] = useState([])
+  const [tag, setTag] = useState("")
 
   const toggleOpen= (id) => {
     if (!open.includes(id)) {
         let newOpen = [...open].concat(id)
-        //  newOpen.push(id)
-         console.log("id", id)
          setOpen(newOpen)
-    
-         console.log("new", newOpen)
-         console.log("open", open)
          handleOnClick()
      
     } else {
@@ -46,19 +42,24 @@ function Students() {
 
 
   React.useEffect(() => {
+    // students.students.map(i=>i.tags=[])
+    // console.log("iterations", students)
     getStudents()
       }, []);
 
   let handleOnClick= () => {
       
       setExpanded(!isExpanded);
-      console.log("expanded", isExpanded)
   }
     
   let getStudents = () => {
     axios
       .get("https://api.hatchways.io/assessment/students")
-      .then((results) => {setStudents(results.data.students) 
+      .then((results) => {setStudents(results.data.students)
+        // for (let item of students) {
+        //   item.tags = [""];
+        // } 
+        results.data.students.forEach((student) => student.tags = [])
         console.log(results.data)})
 
       .catch((err) => console.log(err.message));
@@ -85,7 +86,63 @@ function Students() {
     : students.filter((student) =>
         wholeName(student).toLowerCase().includes(search.toLowerCase())
       );
+  
+  const handleTagChange = (e) => {
+    setTag(e.target.value);
+    console.log("tag", tag)
+  };
 
+  let studentId = () => { return students.id} 
+
+  const addNewTag = (e, key) => {
+
+    console.log("target", e)
+    // if (e.key === "Enter") {
+    // id = studentId()
+    // console.log("id", id)
+    //   console.log("ENTER")
+    //   setTag([...tag, {id:e.target.id, value:e.target.value}])
+    //   console.log("tag", tag)
+
+    //   // .bind(this, student.id)
+    // }
+    // if (e.key === "Enter"){
+    //   console.log("ID", id)
+    //   console.log("Enter")
+
+    const index = students.findIndex((student) => student.id === key);
+    console.log("What?", key)
+    if (index !== -1) {
+      const newStudents = [...students];
+      newStudents[index] = {
+        ...newStudents[index],
+        tags: [...newStudents[index].tags,  e ]
+      };
+      console.log("CRY", newStudents[index])
+      setStudents(newStudents);
+      // setTag("")
+      console.log("Set", students);
+
+    } else {
+      console.log("NO", index)
+      console.log("student", key)
+    }
+    setTag("")
+  
+  // }new
+  // setStudents({students : students.tags.concat(tag)})
+    // { students : student.id, student.tags.concat(tags)}
+  }
+  // const addTag = (e, key) => {
+  //   // const key = document.getElementById('key')
+  //   e.preventDefault();
+  //   addNewTag(tag, key);
+  //   console.log("key", key)
+  //   setTag("");
+  //   // if (e.key == "Enter") {
+  //   //   setTag([...tag, e.target.value]);
+  //   // }
+  // };
 
   return (
 
@@ -113,6 +170,32 @@ function Students() {
                 <p>Company: {student.company}</p>
                 <p>Skill: {student.skill}</p>
                 <p>Average: {average(student.grades)}%</p>
+                <div>
+
+                <form
+                  onSubmit={(e) => {
+          e.preventDefault();
+          addNewTag(tag, student.id);
+          setTag("");
+          e.target.reset()
+        }}
+                  key={student.id}>
+
+                  <input
+                    onChange={handleTagChange}
+                    
+                    type="text"
+                    name="tag"
+                    placeholder="Add a Tag"
+                    key={student.id}
+                    value={student.tag}
+                    ></input>
+
+                  
+                </form>
+
+
+            </div>
 
                 <div className={!student.isExpanded ? "expanded" : "collapsed"}>
                   <p id="detail">asdlkjasdlkj</p>
