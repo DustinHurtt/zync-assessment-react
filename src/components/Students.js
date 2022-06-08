@@ -8,8 +8,9 @@ function Students() {
 
   const [students, setStudents] = useState([])
   const [search, setSearch] = useState("")
+  const [tagSearch, setTagSearch] = useState("")
   const [ isExpanded, setExpanded ] = useState(false);
-  const { getCollapseProps, getToggleProps } = useCollapse({ isExpanded });
+  const { getCollapseProps } = useCollapse({ isExpanded });
   const [open, setOpen] = useState([])
   const [tag, setTag] = useState("")
 
@@ -25,25 +26,7 @@ function Students() {
     }
   }
 
-//   const toggleOpen= (id) => {
-//     if (open.includes(id)) {
-//      setOpen(open.filter(studenId => studenId !== id))
-//     } else {
-//      let newOpen = [...open].concat(id)
-//     //  newOpen.push(id)
-//      console.log("id", id)
-//      setOpen(newOpen)
-
-//      console.log("new", newOpen)
-//      console.log("open", open)
-//      handleOnClick()
-//     }
-//   }
-
-
   React.useEffect(() => {
-    // students.students.map(i=>i.tags=[])
-    // console.log("iterations", students)
     getStudents()
       }, []);
 
@@ -56,11 +39,8 @@ function Students() {
     axios
       .get("https://api.hatchways.io/assessment/students")
       .then((results) => {setStudents(results.data.students)
-        // for (let item of students) {
-        //   item.tags = [""];
-        // } 
         results.data.students.forEach((student) => student.tags = [])
-        console.log(results.data)})
+        })
 
       .catch((err) => console.log(err.message));
                 }  
@@ -77,72 +57,43 @@ function Students() {
     setSearch(e.target.value);
   };
 
+  const tagSearchChange = (e) => {
+    setTagSearch(e.target.value);
+  };
+
   const wholeName = (student) => {
-    return student.firstName + " " + student.lastName
+    return student.firstName + " " + student.lastName 
   }
 
-  const filtered = !search
+  const tags = (student) => {
+    return student.tags
+  }
+
+  const filtered = !search && !tagSearch
     ? students
     : students.filter((student) =>
-        wholeName(student).toLowerCase().includes(search.toLowerCase())
-      );
+        wholeName(student).toLowerCase().includes(search.toLowerCase()) && tags(student).join(" ").toLowerCase().includes(tagSearch.toLowerCase()));
+
   
   const handleTagChange = (e) => {
     setTag(e.target.value);
-    console.log("tag", tag)
   };
 
-  let studentId = () => { return students.id} 
 
   const addNewTag = (e, key) => {
 
-    console.log("target", e)
-    // if (e.key === "Enter") {
-    // id = studentId()
-    // console.log("id", id)
-    //   console.log("ENTER")
-    //   setTag([...tag, {id:e.target.id, value:e.target.value}])
-    //   console.log("tag", tag)
-
-    //   // .bind(this, student.id)
-    // }
-    // if (e.key === "Enter"){
-    //   console.log("ID", id)
-    //   console.log("Enter")
-
     const index = students.findIndex((student) => student.id === key);
-    console.log("What?", key)
+
     if (index !== -1) {
       const newStudents = [...students];
       newStudents[index] = {
         ...newStudents[index],
         tags: [...newStudents[index].tags,  e ]
       };
-      console.log("CRY", newStudents[index])
       setStudents(newStudents);
-      // setTag("")
-      console.log("Set", students);
-
-    } else {
-      console.log("NO", index)
-      console.log("student", key)
-    }
-    setTag("")
+    } 
   
-  // }new
-  // setStudents({students : students.tags.concat(tag)})
-    // { students : student.id, student.tags.concat(tags)}
   }
-  // const addTag = (e, key) => {
-  //   // const key = document.getElementById('key')
-  //   e.preventDefault();
-  //   addNewTag(tag, key);
-  //   console.log("key", key)
-  //   setTag("");
-  //   // if (e.key == "Enter") {
-  //   //   setTag([...tag, e.target.value]);
-  //   // }
-  // };
 
   return (
 
@@ -151,7 +102,8 @@ function Students() {
 
     <div className="scroll">
 
-      <input type="text" placeholder="Search by Name" value={search} onChange={handleSearchChange} />
+      <input name="search" type="text" placeholder="Search by Name" value={search} onChange={handleSearchChange} />
+      <input name="tags" type="text" placeholder="Search by Tag" value={tagSearch} onChange={tagSearchChange} />
 
     {filtered.map((student) => {
         return (
@@ -171,76 +123,64 @@ function Students() {
                 <p>Skill: {student.skill}</p>
                 <p>Average: {average(student.grades)}%</p>
                 <div>
-
-                <form
-                  onSubmit={(e) => {
-          e.preventDefault();
-          addNewTag(tag, student.id);
-          setTag("");
-          e.target.reset()
-        }}
-                  key={student.id}>
-
-                  <input
-                    onChange={handleTagChange}
-                    
-                    type="text"
-                    name="tag"
-                    placeholder="Add a Tag"
+                  <form
+                    onSubmit={(e) => {
+                      e.preventDefault();
+                      addNewTag(tag, student.id);
+                      setTag("");
+                      e.target.reset();
+                    }}
                     key={student.id}
-                    value={student.tag}
+                  >
+                    <input
+                      onChange={handleTagChange}
+                      type="text"
+                      name="tag"
+                      placeholder="Add a Tag"
+                      key={student.id}
+                      value={student.tag}
                     ></input>
-
-                  
-                </form>
-
-
-            </div>
-
-                <div className={!student.isExpanded ? "expanded" : "collapsed"}>
-                  <p id="detail">asdlkjasdlkj</p>
+                  </form>
                 </div>
+
               </div>
 
-              {/* <button
-                className="expand_btn"
-                onClick={() => handleOnClick()}
-                id="expand_btn"
-              >
-                +
-              </button> */}
-
-              <button className="expand-btn" onClick={() => toggleOpen(student.id)}>{open.includes(student.id) ? '-' : '+'}</button>
+              <button
+                className="expand-btn"
+                onClick={() => toggleOpen(student.id)}>
+                {open.includes(student.id) ? "-" : "+"}
+              </button>
             </div>
 
             <div className="collapsible">
               <div {...getCollapseProps()}>
                 <div className="content">
-                    {/* {student.grades.map((grade, i) =>{
+
+                  {open.includes(student.id) ? (
+                    <div className="grades-list">
+
+                      {student.grades.map((grade, i) => {
                         return (
-                            <div>
-                                <p>Test{i+1}: &nbsp;&nbsp; {grade}%</p>
-                            </div>
-                        )
-                    })} */}
-
-                    {open.includes(student.id) ? 
-                        (
-                            <div className="grades-list">
-                            <p>test</p>
-                            {student.grades.map((grade, i) => {
-                                return (
-                                    <div>
-                                        <p key={grade.id}>Test {i + 1}: &nbsp;&nbsp; {grade}%</p>
-                                    </div> 
-                                    )
-                                })}
-                            </div>) 
-
-                        : null}
-                        
+                          <div>
+                            <p key={grade.id}>
+                              Test {i + 1}: &nbsp;&nbsp; {grade}%
+                            </p>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  ) : null}
                 </div>
               </div>
+            </div>
+            
+            <div>
+              <p>
+                {student.tags.map((tag, i) => (
+                  <button key={i} onClick={()=>setTagSearch(tag)}><span>{tag}</span></button>
+
+                ))}
+              </p>
             </div>
 
             <hr />
