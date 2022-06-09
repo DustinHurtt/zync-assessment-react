@@ -5,6 +5,11 @@ body {
   background-color: lightgray;
 }
 
+.headline {
+  font-weight: 900;
+  font-size: 2.3rem;
+}
+
 .studentsList {
   display: flex;
   flex-direction: column;
@@ -14,28 +19,36 @@ body {
 }
 
 .scroll {
-  background-color: #f1f1f1;
-  overflow: auto;
+  background-color: white;
+  overflow: scroll;
+  overflow-x: hidden;
   overflow-y: scroll;
   white-space: nowrap;
-  margin: 20px;
+  margin: 10vh 20vw 5vh 20vw;
   text-align: justify;
   padding: 20px;
-  height: 90vh;
-  border-radius: 1%;
+  height: 80vh;
+  border-radius: 1.5%;
   width: 60vw;
 }
 
 .studentImg {
 
-  height: 100px;
-  width: 100px;
+  height: 120px;
+  width: 120px;
   background-size: cover;
   background-position: center;
   border-radius: 50%;
   border: 1px solid;
+  margin: 10%
 
 
+}
+
+.card {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
 }
 
 .studentCard {
@@ -45,9 +58,10 @@ body {
   display: flex;
   flex-direction: row;
   width: 60vw;
+  justify-content: space-between;
   /* border: 1px solid; */
-  justify-content: center;
-  align-items: center;
+  /* justify-content: center; */
+  /* align-items: center; */
 
 }
 
@@ -55,9 +69,7 @@ body {
   margin-left: 5%;
 }
 
-.expanded {
-  visibility: hidden;
-}
+
 
 .collapsed {
   visibility: visible;
@@ -69,15 +81,40 @@ body {
   flex-direction: column;
 }
 
-
-
-
 .collapsible .content {
   padding: 6px;
-  background-color: #eeeeee;
+  background-color: white;
 }
+
 .collapsible .header {
   background-color: #dddddd;
   padding: 6px;
   cursor: pointer;
 }
+
+.searchbars {
+  display: flex;
+  flex-direction: column;
+}
+
+.input {
+  border: none;
+  border-bottom: 1px solid black;
+  height: 4vh
+}
+
+.expand {
+
+  border: none;
+  background: white;
+  font-size: 3rem;
+  color: gray;
+  align-self: flex-start;
+  margin: 2%;
+
+}
+
+.tagButton {
+  margin: 1%
+}
+

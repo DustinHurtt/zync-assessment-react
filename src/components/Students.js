@@ -102,57 +102,38 @@ function Students() {
 
     <div className="scroll">
 
-      <input name="search" type="text" placeholder="Search by Name" value={search} onChange={handleSearchChange} />
-      <input name="tags" type="text" placeholder="Search by Tag" value={tagSearch} onChange={tagSearchChange} />
+      <div className="searchbars">
+
+        <input className="input" name="search" type="text" placeholder="Search by Name" value={search} onChange={handleSearchChange} />
+        <input className="input" name="tags" type="text" placeholder="Search by Tag" value={tagSearch} onChange={tagSearchChange} />
+
+      </div>
 
     {filtered.map((student) => {
         return (
           <div className="cardContainer" key={student.id}>
             <div className="studentCard">
+
+            <div className="card" >
+            <div>
+
               <div
                 className="studentImg"
                 style={{ backgroundImage: `url(${student.pic})` }}
               ></div>
 
+            </div>
+
               <div className="studentInfo">
-                <h3>
+                <h1 className="headline">
                   {uppercase(student.firstName)} {uppercase(student.lastName)}
-                </h3>
+                </h1>
                 <p>Email: {student.email}</p>
                 <p>Company: {student.company}</p>
                 <p>Skill: {student.skill}</p>
                 <p>Average: {average(student.grades)}%</p>
-                <div>
-                  <form
-                    onSubmit={(e) => {
-                      e.preventDefault();
-                      addNewTag(tag, student.id);
-                      setTag("");
-                      e.target.reset();
-                    }}
-                    key={student.id}
-                  >
-                    <input
-                      onChange={handleTagChange}
-                      type="text"
-                      name="tag"
-                      placeholder="Add a Tag"
-                      key={student.id}
-                      value={student.tag}
-                    ></input>
-                  </form>
-                </div>
 
-              </div>
-
-              <button
-                className="expand-btn"
-                onClick={() => toggleOpen(student.id)}>
-                {open.includes(student.id) ? "-" : "+"}
-              </button>
-            </div>
-
-            <div className="collapsible">
+                <div className="collapsible">
               <div {...getCollapseProps()}>
                 <div className="content">
 
@@ -173,17 +154,56 @@ function Students() {
                 </div>
               </div>
             </div>
-            
+
             <div>
               <p>
                 {student.tags.map((tag, i) => (
-                  <button key={i} onClick={()=>setTagSearch(tag)}><span>{tag}</span></button>
+                  <button className="tagButton" key={i} onClick={()=>setTagSearch(tag)}><span>{tag}</span></button>
 
                 ))}
               </p>
             </div>
 
-            <hr />
+                <div>
+                  <form
+                    onSubmit={(e) => {
+                      e.preventDefault();
+                      addNewTag(tag, student.id);
+                      setTag("");
+                      e.target.reset();
+                    }}
+                    key={student.id}
+                  >
+                    <input
+                      className="input"
+                      onChange={handleTagChange}
+                      type="text"
+                      name="tag"
+                      placeholder="Add a Tag"
+                      key={student.id}
+                      value={student.tag}
+                    ></input>
+                  </form>
+                </div>
+
+                </div>
+
+              </div>
+
+              <button
+                className="expand"
+                onClick={() => toggleOpen(student.id)}>
+                {open.includes(student.id) ? "-" : "+"}
+              </button>
+            </div>
+
+
+            
+
+
+
+
+            <hr style={{ color: "gray", width: "100%", border: "none", borderBottom: "1px solid"}}/>
           </div>
         );
       })}
