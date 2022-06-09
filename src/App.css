@@ -20,9 +20,7 @@ body {
 
 .scroll {
   background-color: white;
-  overflow: scroll;
-  overflow-x: hidden;
-  overflow-y: scroll;
+  overflow: auto;
   white-space: nowrap;
   margin: 10vh 20vw 5vh 20vw;
   text-align: justify;
@@ -59,17 +57,12 @@ body {
   flex-direction: row;
   width: 60vw;
   justify-content: space-between;
-  /* border: 1px solid; */
-  /* justify-content: center; */
-  /* align-items: center; */
 
 }
 
 .studentInfo {
   margin-left: 5%;
 }
-
-
 
 .collapsed {
   visibility: visible;
